@@ -9,6 +9,11 @@ the hardware allows, and only the keys that physically have nowhere to go were
 moved. On top of that it adds a few things aimed at TypeScript/Kotlin work and
 vim.
 
+![TOTEM keymap](keymap-drawer/totem.svg)
+
+The image above is re-rendered by CI on every keymap change. Keep it open on a
+second screen during the first week.
+
 ---
 
 ## Contents
@@ -34,11 +39,18 @@ outer columns have no home and had to move.
 | Key | On the Corne | On the TOTEM | Why |
 | --- | --- | --- | --- |
 | `TAB` | Top left outer | `Q`+`W` combo | No top-row outer key exists |
-| `LCTRL` | Left home outer | Hold the left outer key | Only one left outer key exists |
-| `LSHIFT` | Bottom left outer | Hold the right outer key | `LCTRL` won the left outer slot |
+| `LSHIFT` | Bottom left outer | Hold the left outer key | **Same spot as the Corne** |
+| `LCTRL` | Left home outer | Hold the right outer key | No home-row outer key exists |
 | `BSPC` | Top right outer | Tap the right outer key | No top-row outer key exists |
-| `SQT` (`'`) | Right home outer | `L`+`;` combo | No home-row outer key exists |
+| `SQT` (`'`) | Right home outer | `L`+`;` combo, or `C` position on SYMBOL | No home-row outer key exists |
 | `ESC` | Bottom right outer | Tap the left outer key, or `J`+`K` | Swapped sides with `BSPC` |
+| `PG_DN` | NUMBER, right of `PG_UP` | NUMBER, right outer key (under `PG_UP`) | Only five columns |
+| `GRAVE` | NUMBER, top left outer | SYMBOL, `A` position | No top-row outer key exists |
+| `F11` / `F12` | NUMBER, bottom row | FN, `K` / `L` positions | Only five columns |
+| `BOOT` / `RST` (right half) | FN, `H` / `G` positions | FN, right outer column (`;` / `/` positions) | Each half needs its own |
+
+Dropped entirely: RGB underglow, external power and the display widgets (the
+TOTEM has no LEDs or screen), and the unused `td0` tap-dance.
 
 Everything else is where you left it. All thirty alphas, the punctuation on the
 bottom row, and the entire thumb cluster are unchanged:
@@ -50,15 +62,16 @@ GUI   NUM   SPC   |   ENT   SYM   ALT
 Layer numbers are also unchanged, so `NUM` is still layer 1 and `SYM` is still
 layer 2, and holding both still gets you to the function layer.
 
-### Why CTRL went left and SHIFT went right
+### Why SHIFT stayed left and CTRL went right
 
-Only one of the two could keep a left-hand key. Ctrl won because Ctrl chords are
-overwhelmingly same-hand -- `Ctrl+C`, `Ctrl+X`, `Ctrl+V`, `Ctrl+Z`, `Ctrl+A`,
-`Ctrl+S`, `Ctrl+W`, `Ctrl+R` and `Ctrl+T` are all left-hand letters. Putting Ctrl
-on the right would turn every one of those into an awkward two-hand stretch.
+Only one of the two could keep a left-hand key. Shift won because the TOTEM's
+bottom-left outer key is *exactly* where the Corne's left Shift was, so the
+strongest pinky habit carries over untouched, and right-hand capitals (`J`,
+`K`, `?`, `:`) still get the opposite-hand Shift.
 
-Shift moving to the right hand costs almost nothing, because correct touch
-typing already uses the shift opposite the letter being capitalised.
+Ctrl moving right is cheap on macOS, where the same-hand chords (`Cmd+C`,
+`Cmd+V`, `Cmd+Z`...) live on the left thumb. On Linux the LINUX overlay moves
+Ctrl onto that same left thumb, so `Ctrl+C`/`V`/`Z` stay one-handed there too.
 
 ### What is deliberately *not* here
 
@@ -90,12 +103,13 @@ underneath) and `XX` is an intentionally dead key.
 ```
            Q     W     E     R     T   |   Y     U     I     O     P
            A     S     D     F     G   |   H     J     K     L     ;
-CTL/ESC    Z     X     C     V     B   |   N     M     ,     .     /    SFT/BSP
+SFT/ESC    Z     X     C     V     B   |   N     M     ,     .     /    CTL/BSP
                      GUI   NUM   SPC   |  ENT   SYM   ALT
 ```
 
-The two outer keys are dual-function: tap for `ESC` / `BSPC`, hold for `CTRL` /
-`SHIFT`. Both thumb inner keys are layer-taps, so `SPACE` and `ENTER` also reach
+The two outer keys are dual-function: tap for `ESC` / `BSPC`, hold for `SHIFT` /
+`CTRL`. Holding `BSPC` gives Ctrl, not repeat: to auto-repeat, tap then hold
+within 175ms (`quick-tap-ms`). For bulk deletes use `DELW` / `DELL` on NUMBER. Both thumb inner keys are layer-taps, so `SPACE` and `ENTER` also reach
 the FN layer when held.
 
 ### Layer 1 -- NUMBER (hold left thumb)
@@ -103,7 +117,7 @@ the FN layer when held.
 ```
            1     2     3     4     5   |   6     7     8     9     0
          SHFT  ()=>   APP  DELW  DELL  |  LFT   DWN    UP   RGT   PGUP
-  --      F1    F2    F3    F4    F5   |  F6    F7    F8    F9   F10      --
+  --      F1    F2    F3    F4    F5   |  F6    F7    F8    F9   F10    PGDN
                       --    --    --   |  --    --    --
 ```
 
@@ -111,34 +125,38 @@ Arrows sit on `HJKL`, which is already the vim layout. `APP` is the macOS
 "cycle windows within the current app" shortcut. `DELW` and `DELL` are
 delete-word and delete-to-line-start.
 
-`F11` and `F12` live on the FN layer rather than here, because the two outer
-positions on this row are reserved as transparent so that Ctrl and Shift stay
-available while the layer is held.
+`F11` and `F12` live on the FN layer rather than here, because there are only
+five columns. `PGDN` takes the right outer key, directly under `PGUP` -- the one
+exception to the transparency convention, so right Ctrl is not available while
+NUMBER is held (left Shift still is).
 
 ### Layer 2 -- SYMBOL (hold right thumb)
 
 ```
            !     @     #     $     %   |   ^     &     *     (     )
            `   BACK   FWD  PLAY  VOL+  |   -     =     [     ]     \
-  --       ~     :    XX   MUTE  VOL-  |   _     +     {     }     |      --
+  --       ~     :     '   MUTE  VOL-  |   _     +     {     }     |      --
                       --    --   SPC   |  ENT    --    --
 ```
 
 The dedicated `:` is there because Shift is now on the right pinky and so is
 `;`, which would otherwise make `:` an awkward same-finger chord -- and `:` is
-constant in both vim and TypeScript/Kotlin type annotations.
+constant in both vim and TypeScript/Kotlin type annotations. The `'` is a
+backup for the `L`+`;` combo, in case `null;` style rolls make the combo
+unreliable.
 
 ### Layer 3 -- FN (hold either thumb outer, or NUM + SYM together)
 
 ```
           BT0   BT1   BT2   BT3   BT4  |  ->    ?.    ?:    ::   PSCR
-          USB   BLE  BCLR  BCLA  BOOT  |  ===   !==   F11   F12   XX
-  --      RST   XX    XX    XX   LNX   |  XX    XX    XX    XX    XX      --
+          USB   BLE  BCLR  BCLA  BOOT  |  ===   !==   F11   F12  BOOT
+  --      RST   XX    XX    XX   LNX   |  XX    XX    XX    XX   RST      --
                       --    --    --   |  --    --    --
 ```
 
 `BT0`-`BT4` select an absolute Bluetooth profile. `BCLR` clears the current
-profile, `BCLA` clears all of them. `BOOT` enters the bootloader, `RST` resets.
+profile, `BCLA` clears all of them. `BOOT` enters the bootloader, `RST` resets. Both act on the half they are
+pressed on, so each half has its own pair.
 `LNX` toggles the Linux overlay.
 
 ### Layer 4 -- LINUX (toggled by `LNX` on the FN layer)
@@ -146,7 +164,7 @@ profile, `BCLA` clears all of them. `BOOT` enters the bootloader, `RST` resets.
 ```
            --    --    --    --    --  |  --    --    --    --    --
            --    --    --    --    --  |  --    --    --    --    --
-GUI/ESC    --    --    --    --    --  |  --    --    --    --    --      --
+  --       --    --    --    --    --  |  --    --    --    --    --   GUI/BSP
                      CTRL   --    --   |  --    --    --
 ```
 
@@ -212,14 +230,15 @@ macro saves nothing.
 ## macOS and Linux
 
 The base layer is macOS, since this is the travel board. Press `LNX` on the FN
-layer to toggle the Linux overlay; press it again to go back. The setting
-persists across reboots.
+layer to toggle the Linux overlay; press it again to go back. The toggle is
+**not** saved: after the board resets or the battery dies it comes back up on
+macOS, so press `LNX` again.
 
 Six bindings change:
 
 | Key | macOS | Linux |
 | --- | --- | --- |
-| Left outer (hold) | `CTRL` | `GUI` |
+| Right outer (hold) | `CTRL` | `GUI` |
 | Left thumb | `GUI` | `CTRL` |
 | NUMBER, `D` position | App window cycle `Cmd+\`` | `Alt+Tab` |
 | NUMBER, `F` position | Delete word `Alt+Bksp` | `Ctrl+Bksp` |
@@ -253,7 +272,9 @@ linux_number {
 ### The transparency convention
 
 Positions 20 and 31 (the outer keys) and position 32 (the left inner thumb) are
-`&trans` on every non-base layer. This is what keeps Ctrl and Shift usable while
+`&trans` on every non-base layer (the single exception is `PGDN` at 31 on
+NUMBER, which `LINUX_NUM` repeats, because a `&trans` there would fall through
+to LINUX's `GUI/BSP` before reaching NUMBER). This is what keeps Ctrl and Shift usable while
 a layer is held, and it is also what stops the LINUX overlay from shadowing the
 layers underneath it. **If you edit a layer, keep those three positions
 transparent.**
@@ -466,8 +487,10 @@ To flash:
 Flash both halves whenever the keymap changes. The peripheral holds its own copy
 of the keymap, and mismatched halves produce confusing results.
 
-> There is no settings-reset target for the XIAO. If Bluetooth pairing gets into
-> a bad state, use `BCLA` (clear all profiles) on the FN layer instead.
+> If Bluetooth pairing gets into a bad state, flash `settings_reset` to **both**
+> halves, then flash the normal firmware again and pair from scratch. `BCLA`
+> (clear all profiles) on the FN layer only clears host pairings, not the
+> left-right split bond.
 
 ### ZMK Studio
 
@@ -540,7 +563,7 @@ Do not do this during week 1.
 config/
   totem.keymap                     the keymap, combos, macros, behaviors
   totem.conf                       Kconfig options
-  west.yml                         pins ZMK to main
+  west.yml                         pins ZMK to a known-good commit
   boards/shields/totem/            shield definition, vendored
     totem.dtsi                     matrix transform and kscan
     totem-layouts.dtsi             physical layout for Studio

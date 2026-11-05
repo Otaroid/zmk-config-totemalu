@@ -1,0 +1,19 @@
+name: Draw keymap
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "config/*.keymap"
+      - "config/boards/shields/totem/*.dtsi"
+      - "keymap_drawer.config.yaml"
+
+jobs:
+  draw:
+    uses: caksoylar/keymap-drawer/.github/workflows/draw-zmk.yml@467abe2a2fee3a1ec1658d8c3fe33d1cc562b53c
+    permissions:
+      contents: write # commits keymap-drawer/totem.svg back to the branch
+    with:
+      keymap_patterns: "config/totem.keymap"
+      output_folder: "keymap-drawer"
+      west_config_path: "" # shield is vendored, no modules to fetch
+      commit_message: "chore: render keymap SVG"
