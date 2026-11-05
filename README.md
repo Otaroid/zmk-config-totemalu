@@ -472,6 +472,8 @@ include:
     snippet: studio-rpc-usb-uart
   - board: xiao_ble//zmk
     shield: totem_right
+  - board: xiao_ble//zmk
+    shield: settings_reset
 ```
 
 The `studio-rpc-usb-uart` snippet is only on the left half, because the left is
@@ -479,7 +481,10 @@ the central and that is the half Studio talks to.
 
 To flash:
 
-1. Download the artifact zip from the Actions run.
+1. Download the `.uf2` files from the
+   [latest release](../../releases/latest). Every successful build of `main`
+   publishes one, tagged `fw-YYYYMMDD-<run>`. Builds of other branches and PRs
+   only keep the artifact zip on the Actions run.
 2. Double-tap the XIAO's reset button. It mounts as a USB drive.
 3. Copy the matching `.uf2` onto it. The drive unmounts and the half reboots.
 4. Repeat for the other half.
