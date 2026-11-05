@@ -161,7 +161,8 @@
         compatible = "zmk,keymap";
 
         // Convention used throughout: the outer keys (20, 31) and the left
-        // inner thumb (32) are &trans on every non-base layer, so the mods
+        // inner thumb (32) are &trans on every non-base layer (except PG_DN
+        // on NUMBER, position 31), so the mods
         // stay live everywhere and the LINUX overlay cannot shadow them.
 
         base {
@@ -170,13 +171,13 @@
             // ------------------------------------------------------------------------------------
             // |  Q  |  W  |  E  |  R  |  T  |        |  Y  |  U  |  I  |  O  |  P  |
             // |  A  |  S  |  D  |  F  |  G  |        |  H  |  J  |  K  |  L  |  ;  |
-            // | CTRL/ESC |  Z  |  X  |  C  |  V  |  B  |  N  |  M  |  ,  |  .  |  /  | SHFT/BSPC |
+            // | SHFT/ESC |  Z  |  X  |  C  |  V  |  B  |  N  |  M  |  ,  |  .  |  /  | CTRL/BSPC |
             //                 | GUI | NUM | SPC |    | ENT | SYM | ALT |
 
             bindings = <
 &kp Q            &kp W  &kp E  &kp R     &kp T                       &kp Y        &kp U      &kp I      &kp O    &kp P
 &kp A            &kp S  &kp D  &kp F     &kp G                       &kp H        &kp J      &kp K      &kp L    &kp SEMI
-&bhm LCTRL ESC   &kp Z  &kp X  &kp C     &kp V       &kp B           &kp N        &kp M      &kp COMMA  &kp DOT  &kp FSLH  &bhm RSHIFT BSPC
+&bhm LSHIFT ESC  &kp Z  &kp X  &kp C     &kp V       &kp B           &kp N        &kp M      &kp COMMA  &kp DOT  &kp FSLH  &bhm LCTRL BSPC
                                &kp LGUI  &mo NUMBER  &lt FN SPACE    &lt FN ENTER &mo SYMBOL &kp RALT
             >;
         };
@@ -187,13 +188,17 @@
             // ------------------------------------------------------------------------------------
             // |  1  |  2  |  3  |  4  |  5  |        |  6  |  7  |  8  |  9  |  0  |
             // | SHFT| ()=>| APP | DELW| DELL|        | LFT | DWN |  UP | RGT | PGUP|
-            // |     | F1  | F2  | F3  | F4  | F5  |  | F6  | F7  | F8  | F9  | F10 |     |
+            // |     | F1  | F2  | F3  | F4  | F5  |  | F6  | F7  | F8  | F9  | F10 | PGDN|
             //                       |     |     |    |     |     |     |
+            //
+            // PG_DN sits on the right outer key, directly under PG_UP. It is
+            // the one deliberate exception to the &trans-outer-key convention
+            // (the Corne had PG_UP/PG_DN side by side; there is no room here).
 
             bindings = <
 &kp N1      &kp N2      &kp N3         &kp N4        &kp N5          &kp N6    &kp N7    &kp N8  &kp N9     &kp N0
 &kp LSHFT   &ts_lambda  &kp LG(GRAVE)  &kp LA(BSPC)  &kp LG(BSPC)    &kp LEFT  &kp DOWN  &kp UP  &kp RIGHT  &kp PG_UP
-&trans      &kp F1      &kp F2         &kp F3        &kp F4  &kp F5  &kp F6    &kp F7    &kp F8  &kp F9     &kp F10  &trans
+&trans      &kp F1      &kp F2         &kp F3        &kp F4  &kp F5  &kp F6    &kp F7    &kp F8  &kp F9     &kp F10  &kp PG_DN
                                        &trans        &trans  &trans  &trans    &trans    &trans
             >;
         };
@@ -204,13 +209,13 @@
             // ------------------------------------------------------------------------------------
             // |  !  |  @  |  #  |  $  |  %  |        |  ^  |  &  |  *  |  (  |  )  |
             // |  `  | BACK| FWD | PLAY| VOL+|        |  -  |  =  |  [  |  ]  |  \  |
-            // |     |  ~  |  :  |     | MUTE| VOL-|  |  _  |  +  |  {  |  }  | "|" |     |
+            // |     |  ~  |  :  |  '  | MUTE| VOL-|  |  _  |  +  |  {  |  }  | "|" |     |
             //                       |     |     | SPC|  ENT|     |     |
 
             bindings = <
 &kp EXCL   &kp AT      &kp HASH    &kp DLLR   &kp PRCNT            &kp CARET  &kp AMPS   &kp ASTRK  &kp LPAR  &kp RPAR
 &kp GRAVE  &kp K_BACK  &kp K_FORWARD  &kp C_PP  &kp C_VOL_UP      &kp MINUS  &kp EQUAL  &kp LBKT   &kp RBKT  &kp BSLH
-&trans     &kp TILDE   &kp COLON   &none      &kp K_MUTE  &kp C_VOL_DN    &kp UNDER  &kp PLUS  &kp LBRC  &kp RBRC  &kp PIPE  &trans
+&trans     &kp TILDE   &kp COLON   &kp SQT    &kp K_MUTE  &kp C_VOL_DN    &kp UNDER  &kp PLUS  &kp LBRC  &kp RBRC  &kp PIPE  &trans
                                    &trans     &trans      &kp SPACE       &kp RET    &trans    &trans
             >;
         };
@@ -220,14 +225,17 @@
 
             // ------------------------------------------------------------------------------------
             // | BT0 | BT1 | BT2 | BT3 | BT4 |        |  -> |  ?. |  ?: |  :: | PSCR|
-            // | USB | BLE | BCLR| BCLA| BOOT|        | === | !== | F11 | F12 |     |
-            // |     | RST |     |     |     | LNX |  |     |     |     |     |     |     |
+            // | USB | BLE | BCLR| BCLA| BOOT|        | === | !== | F11 | F12 | BOOT|
+            // |     | RST |     |     |     | LNX |  |     |     |     |     | RST |     |
+            //
+            // &bootloader and &sys_reset act on the half they are pressed on, so
+            // each half gets its own copy (as on the Corne).
             //                       |     |     |    |     |     |     |
 
             bindings = <
 &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3   &bt BT_SEL 4               &thin_arrow  &opt_chain   &elvis   &dcolon  &kp PRINTSCREEN
-&out OUT_USB  &out OUT_BLE  &bt BT_CLR    &bt BT_CLR_ALL &bootloader                &strict_eq   &strict_neq  &kp F11  &kp F12  &none
-&trans        &sys_reset    &none         &none          &none        &tog LINUX    &none        &none        &none    &none    &none    &trans
+&out OUT_USB  &out OUT_BLE  &bt BT_CLR    &bt BT_CLR_ALL &bootloader                &strict_eq   &strict_neq  &kp F11  &kp F12  &bootloader
+&trans        &sys_reset    &none         &none          &none        &tog LINUX    &none        &none        &none    &none    &sys_reset &trans
                                           &trans         &trans       &trans        &trans       &trans       &trans
             >;
         };
@@ -236,13 +244,14 @@
             display-name = "LINUX";
 
             // Overlay toggled from FN. Trades GUI and CTRL so that Ctrl+C/V/Z
-            // work natively on Linux. Everything else falls through to the
+            // work natively on Linux: the left thumb becomes CTRL and the right
+            // outer hold becomes GUI. Left Shift/Esc is untouched. Everything else falls through to the
             // layer below, which is why the rest of this layer is &trans.
 
             bindings = <
 &trans          &trans  &trans  &trans  &trans           &trans  &trans  &trans  &trans  &trans
 &trans          &trans  &trans  &trans  &trans           &trans  &trans  &trans  &trans  &trans
-&bhm LGUI ESC   &trans  &trans  &trans  &trans  &trans   &trans  &trans  &trans  &trans  &trans  &trans
+&trans          &trans  &trans  &trans  &trans  &trans   &trans  &trans  &trans  &trans  &trans  &bhm LGUI BSPC
                                 &kp LCTRL &trans &trans  &trans  &trans  &trans
             >;
         };
@@ -254,13 +263,16 @@
             // NUMBER and so cannot patch it directly. Only the three
             // macOS-specific bindings on NUMBER are replaced.
             //
+            // Position 31 repeats PG_DN: &trans here falls through to LINUX
+            // (GUI/BSPC) before it ever reaches NUMBER.
+            //
             // LC(U) is readline/terminal line-kill, not a universal Linux GUI
             // binding -- see the README.
 
             bindings = <
 &trans  &trans  &trans        &trans         &trans       &trans  &trans  &trans  &trans  &trans
 &trans  &trans  &kp LA(TAB)   &kp LC(BSPC)   &kp LC(U)    &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans        &trans         &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &trans  &trans        &trans         &trans  &trans  &trans  &trans  &trans  &trans  &trans  &kp PG_DN
                               &trans         &trans  &trans  &trans  &trans  &trans
             >;
         };

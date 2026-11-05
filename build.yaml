@@ -24,4 +24,6 @@ include:
     snippet: studio-rpc-usb-uart
   - board: xiao_ble//zmk
     shield: totem_right
-# there is no settingsreset (needed) for the XIAO
+  # Flash to both halves to wipe BLE bonds when pairing breaks.
+  - board: xiao_ble//zmk
+    shield: settings_reset
