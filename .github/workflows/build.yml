@@ -11,3 +11,38 @@ jobs:
   build:
     # Pinned to the same ZMK commit as config/west.yml. Bump both together.
     uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@641514a97db345f499dd50b0360e594270f008fe
+
+  release:
+    # Publish a downloadable release for every successful build of main.
+    # PR and feature-branch builds only keep the Actions artifact.
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: firmware
+          path: firmware
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag="fw-$(date -u +%Y%m%d)-${GITHUB_RUN_NUMBER}"
+          short="${GITHUB_SHA::7}"
+          cat > notes.md <<NOTES
+          Firmware built from \`${short}\`.
+
+          | File | Flash to |
+          | --- | --- |
+          $(for f in firmware/*.uf2; do echo "| \`$(basename "$f")\` | $(case "$f" in *left*) echo 'left half';; *right*) echo 'right half';; *settings_reset*) echo 'both halves, only to wipe pairing';; esac) |"; done)
+
+          Double-tap reset on the XIAO, copy the \`.uf2\` onto the drive that appears.
+          NOTES
+          gh release create "$tag" firmware/*.uf2 \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$GITHUB_SHA" \
+            --title "Firmware $(date -u +%Y-%m-%d) (#${GITHUB_RUN_NUMBER})" \
+            --notes-file notes.md \
+            --latest
